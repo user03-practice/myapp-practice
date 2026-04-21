@@ -17,11 +17,11 @@ jobs:
           host: telcation.f5.si
           username: student01
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script_stop: false
           script: |
             cd /home/student01/myapp
-            git clone https://github.com/${{ github.repository }} . 2>/dev/null || (git fetch && git reset --hard origin/main)
+            git fetch && git reset --hard origin/main
             pip3 install -r requirements.txt --break-system-packages
             pkill -f 'python3 app.py' || true
-            nohup python3 app.py > app.log 2>&1 &
-            disown
+            setsid python3 app.py > app.log 2>&1 &
             sleep 3
